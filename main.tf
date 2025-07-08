@@ -7,7 +7,7 @@ resource "aws_instance" "blue" {
   instance_type               = var.instance_type
   associate_public_ip_address = false
   subnet_id                   = aws_subnet.blue_orange.id
-  security_groups             = [aws_security_group.blue.name]
+  security_groups             = [aws_security_group.blue.id]
   tags = {
     Name = "blue"
   }
@@ -59,7 +59,7 @@ resource "aws_instance" "orange" {
   associate_public_ip_address = false
   subnet_id                   = aws_subnet.blue_orange.id
   key_name                    = aws_key_pair.orange.key_name
-  security_groups             = [aws_security_group.orange.name]
+  security_groups             = [aws_security_group.orange.id]
   tags = {
     Name = "orange"
   }
