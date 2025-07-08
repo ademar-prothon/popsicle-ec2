@@ -7,7 +7,7 @@ resource "aws_instance" "blue" {
   instance_type               = var.instance_type
   associate_public_ip_address = false
   subnet_id                   = aws_subnet.blue_orange.id
-  security_groups             = [aws_security_group.blue.id]
+  vpc_security_group_ids             = [aws_security_group.blue.id]
   tags = {
     Name = "blue"
   }
@@ -49,6 +49,26 @@ resource "aws_ec2_instance_connect_endpoint" "blue" {
   }
 }
 
+resource "aws_vpc_security_group_ingress_rule" "blue" {
+  security_group_id = aws_security_group.blue.id
+
+  referenced_security_group_id = aws_security_group.blue.id
+  ip_protocol                  = -1 # -1 means all protocols
+  from_port                    = -1
+  to_port                      = -1
+
+  description = "Allow all traffic from inside security group"
+}
+
+resource "aws_vpc_security_group_egress_rule" "blue" {
+  security_group_id = aws_security_group.blue.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = -1
+  ip_protocol = -1
+  to_port     = -1
+}
+
 ###############
 # Orange resources
 ###############
@@ -59,7 +79,7 @@ resource "aws_instance" "orange" {
   associate_public_ip_address = false
   subnet_id                   = aws_subnet.blue_orange.id
   key_name                    = aws_key_pair.orange.key_name
-  security_groups             = [aws_security_group.orange.id]
+  vpc_security_group_ids             = [aws_security_group.orange.id]
   tags = {
     Name = "orange"
   }
@@ -75,17 +95,25 @@ resource "aws_security_group" "orange" {
 }
 
 
-# resource "aws_vpc_security_group_ingress_rule" "orange" {
-#   security_group_id = aws_security_group.orange.id
+resource "aws_vpc_security_group_ingress_rule" "orange" {
+  security_group_id = aws_security_group.orange.id
 
-#   referenced_security_group_id = aws_security_group.blue.id
-#   ip_protocol                  = -1 # -1 means all protocols
-#   from_port                    = 22
-#   to_port                      = 22
+  referenced_security_group_id = aws_security_group.blue.id
+  ip_protocol                  = "tcp" # -1 means all protocols
+  from_port                    = 22
+  to_port                      = 22
 
-#   description = "Allow SSH traffic from blue security group"
-# }
+  description = "Allow SSH traffic from blue security group"
+}
 
+resource "aws_vpc_security_group_egress_rule" "orange" {
+  security_group_id = aws_security_group.orange.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = -1
+  ip_protocol = -1
+  to_port     = -1
+}
 
 ####################
 # Global resources
