@@ -7,7 +7,7 @@ resource "aws_instance" "blue" {
   instance_type               = var.instance_type
   associate_public_ip_address = false
   subnet_id                   = aws_subnet.blue_orange.id
-  vpc_security_group_ids             = [aws_security_group.blue.id]
+  vpc_security_group_ids      = [aws_security_group.blue.id]
   tags = {
     Name = "blue"
   }
@@ -67,6 +67,8 @@ resource "aws_vpc_security_group_egress_rule" "blue" {
   from_port   = -1
   ip_protocol = -1
   to_port     = -1
+
+  description = "Allow all egress traffic"
 }
 
 ###############
@@ -79,7 +81,7 @@ resource "aws_instance" "orange" {
   associate_public_ip_address = false
   subnet_id                   = aws_subnet.blue_orange.id
   key_name                    = aws_key_pair.orange.key_name
-  vpc_security_group_ids             = [aws_security_group.orange.id]
+  vpc_security_group_ids      = [aws_security_group.orange.id]
   tags = {
     Name = "orange"
   }
@@ -113,6 +115,8 @@ resource "aws_vpc_security_group_egress_rule" "orange" {
   from_port   = -1
   ip_protocol = -1
   to_port     = -1
+
+  description = "Allow all egress traffic"
 }
 
 ####################
