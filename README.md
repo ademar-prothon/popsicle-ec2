@@ -13,6 +13,7 @@ A simple (and minimal!) terraform to :
 - provided VPC does not contain any subnets
 - instances do not need to reach the internet 
 - a proxy to test the setup is allowed (EC2 instance connect)
+- user has AdministratorAccess permission set on an AWS account configured on the runing machine 
 
 ## Demo
 
